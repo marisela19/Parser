@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace practica4CsvParser
+{
+    class parser
+    {
+        private string @filePath;
+
+        public void parseFile() 
+        {
+            readFile();
+            verifyFileType();
+        }
+
+        private void readFile()
+        {
+            Console.Write("\nPor favor, escriba la ruta completa del archivo \"CSV\" que desea analizar: \n\n\n\t\t");
+            this.filePath = Console.ReadLine();
+        }
+
+        public void verifyFileType()
+        {
+
+            if (File.Exists(this.filePath))
+            {
+                if (Path.GetExtension(this.filePath) == ".csv")
+                {
+                    getFileContent();
+                }
+                else
+                {
+                    Console.WriteLine("\n\n\tLo lamento pero " + Path.GetExtension(this.filePath) + " archivos no están permitidos, sólo los archivos CSV\n");
+                    Console.ReadKey();
+                    Console.Clear();
+                    readFile();
+                }
+            }
+            else 
+            {
+                Console.WriteLine("\n\n\tLo lamento " + this.filePath + " el archivo no existe, vuelva a intentarlo...\n");
+                Console.ReadKey();
+                Console.Clear();
+                readFile();
+            }
+        }
+
+        private void getFileContent() 
+        {
+            List<string[]> csvArray = new List<string[]>();
+            string line;
+            string[] row;
+
+            try
+            {
+                StreamReader readFile = new StreamReader(this.filePath);
+                while ((line = readFile.ReadLine()) != null)
+                {
+                    row = line.Split(',');
+                    csvArray.Add(row);
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            printInformation(csvArray);
+        }
+
+
+        private void printInformation(List<string[]> csvArray) 
+        {
+            string delimiter = "\n------------------------------------------------------------------------\n";
+
+            Console.Clear();
+            Console.WriteLine("\nLa siguiente información fue encontrada en su archivo(" + this.filePath + "): \n");
+
+            foreach (string[] array in csvArray)
+            {
+                if (array.Length > 0)
+                {
+                    Console.WriteLine("Id:" + array[0]);
+                }
+                if (array.Length > 1)
+                {
+                    Console.WriteLine("Nombre:" + array[1]);
+                }
+                if (array.Length > 2)
+                {
+                    Console.WriteLine("Direccion:" + array[2]);
+                }
+                if (array.Length > 3)
+                {
+                    Console.WriteLine("Telefono:" + array[3]);
+                }
+            
+            }
+        
+        }
+
+    }
+}
